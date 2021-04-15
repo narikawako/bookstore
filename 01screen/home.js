@@ -37,12 +37,21 @@ export default class Home extends React.Component {
       <View style={CommonStyles.container}>
         <View style={styles.containerRow}>
           <View style={styles.containerBig}>
-            <TouchableOpacity onPress={this._tocash} style={styles.buttonBig}>
+            <TouchableOpacity onPress={this._tobook} style={styles.buttonBig}>
               <Image
                 style={styles.imgBig}
                 source={require('../assets/books-64.png')}
               />
               <Text style={styles.buttonTextBig}>{"ブックリスト"}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.containerBig}>
+            <TouchableOpacity onPress={this._tosetting} style={styles.buttonBig}>
+              <Image
+                style={styles.imgBig}
+                source={require('../assets/settings-64.png')}
+              />
+              <Text style={styles.buttonTextBig}>{"設定"}</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -56,8 +65,11 @@ export default class Home extends React.Component {
   _modifyPWD = () => {
     this.props.navigation.navigate('modifypwd');
   };
-  _tocash = () => {
-    //this.props.navigation.navigate('cashbook');
+  _tobook = () => {
+    this.props.navigation.navigate('booklist');
+  };
+  _tosetting= () => {
+    this.props.navigation.navigate('setting');
   };
   
   componentDidMount() {
@@ -70,7 +82,7 @@ const styles = StyleSheet.create(
     containerRow: {
       flexDirection: "row",
       flexWrap: "nowrap",
-      justifyContent: "space-between",
+      justifyContent: "flex-start",
       alignItems: "flex-start",
       alignContent: "flex-start",
       paddingTop: 5,
@@ -88,6 +100,7 @@ const styles = StyleSheet.create(
       borderColor: COLORS.main,
       borderWidth: 1,
       borderRadius: 0,
+      marginRight:10
     },
     buttonBig: {
       backgroundColor: COLORS.main,

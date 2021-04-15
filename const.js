@@ -1,8 +1,12 @@
-import { StyleSheet } from 'react-native';
-
+import { StyleSheet, Dimensions } from 'react-native';
+import * as FileSystem from 'expo-file-system';
 
 export const DEVICE_BACK_ACTION = 'hardwareBackPress';
 
+//书籍图片的保存位置
+export const BOOKSIMAGEFOLDER = `${FileSystem.documentDirectory}booksimages/`;
+
+//字体设定
 export const FONTSIZE = {
   default: 18,
   big: 20,
@@ -25,7 +29,8 @@ export const COLORS = {
   blueback: '#CCFFCF'
 }
 
-export const  _formatDate = (date) => {
+//日期的格式化操作
+export const _formatDate = (date) => {
   if ((date === '') || (date.toString() === 'Invalid Date')) return '';
   let d = new Date(date);
   let month = '' + (d.getMonth() + 1);
@@ -35,27 +40,19 @@ export const  _formatDate = (date) => {
   if (day.length < 2) day = '0' + day;
   return [year, month, day].join('/');
 }
-export const _formatMonth = (d) => {
-  let month = '' + (d.getMonth() + 1);
-  let year = d.getFullYear();
-  if (month.length < 2) month = '0' + month;
-  return [year, month].join('');
-}
-export const getDateYMLabel = (dt) => {
-  let y = dt.getFullYear();
+export const getDateNowEX = () => {
+  let dt = new Date();
+  let y = ("" + dt.getFullYear()).slice(-2);
   let m = ("00" + (dt.getMonth() + 1)).slice(-2);
-  var result = y + "年" + m + "月";
-  return result;
-}
-export const getDateYMValue = (dt) => {
-  let y = dt.getFullYear();
-  let m = ("00" + (dt.getMonth() + 1)).slice(-2);
-  var result = y + "" + m;
+  let d = ("00" + dt.getDate()).slice(-2);
+  let h = ("00" + dt.getHours()).slice(-2);
+  let mi = ("00" + dt.getMinutes()).slice(-2);
+  let s = ("00" + dt.getSeconds()).slice(-2);
+  var result = y + "" + m + "" + d + "-" + h + "" + mi + "" + s;
   return result;
 }
 
-
-//导航栏通用的样式
+//通用的样式
 export const CommonStyles = StyleSheet.create(
   {
     container: {
@@ -66,36 +63,12 @@ export const CommonStyles = StyleSheet.create(
       flex: 1,
       padding: 5
     },
-    headerRow: {
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    headerlink: {
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    headerimg: {
-      height: 20,
-      width: 20,
-      borderWidth: 0,
-      borderRadius: 0,
-      marginTop: -3,
-      marginRight: 10
-    },
     headerTitle: {
       color: COLORS.white,
       textAlign: 'center',
       fontWeight: 'bold',
       fontSize: 25,
       paddingBottom: 5,
-    },
-    headerSubtitle: {
-      color: COLORS.white,
-      textAlign: 'center',
-      fontSize: 12,
     },
     headerButtonLeft: {
       borderColor: COLORS.white,
@@ -130,6 +103,8 @@ export const CommonStyles = StyleSheet.create(
       alignItems: "center",
       textAlign: "center",
     },
+
+
     emptyContainer: {
       paddingLeft: 5,
       paddingRight: 5,
@@ -227,6 +202,14 @@ export const CommonStyles = StyleSheet.create(
       borderWidth: 0,
       borderRadius: 0,
     },
+    listScanButton: {
+      backgroundColor: COLORS.main,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      borderWidth: 0,
+      borderRadius: 0,
+    },
     buttonText: {
       color: COLORS.white,
       fontSize: FONTSIZE.default,
@@ -264,43 +247,12 @@ export const CommonStyles = StyleSheet.create(
       alignItems: "center",
 
     },
-    radioContainer: {
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      height: 50,
-      borderColor: '#a6a6a6',
-      borderWidth: 1,
-      borderRadius: 0,
-      backgroundColor: COLORS.border,
-      paddingRight: 10,
-      paddingLeft: 10,
-      marginLeft: 0,
-      marginRight: 0,
-    },
-    radioitembutton: {
-      width: 100,
-    },
-    radioitemtext: {
-      fontSize: FONTSIZE.default,
-      marginRight: 10
-    },
     dateAreaText: {
       fontWeight: 'bold',
       fontSize: FONTSIZE.default,
-      paddingLeft: 8
+      paddingLeft: 0
     },
-    radioitemtextcontainer: {
-      flex: 1,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      alignItems: "center",
-      paddingLeft: 10,
-      paddingRight: 10,
-      height: 50
 
-    },
     dateContainer: {
       height: 50,
       flexDirection: "column",
@@ -344,24 +296,46 @@ export const CommonStyles = StyleSheet.create(
       marginTop: 10,
       fontSize: 13
     },
-    flexareapanel: {
-      flex: 1,
-      backgroundColor: COLORS.border,
-      borderWidth: 0,
-      borderRadius: 0,
-    },
     flatList: {
       flex: 1,
       paddingLeft: 0,
       paddingRight: 0,
     },
-    totalContainer: {
-      height: 40,
+    scannerContainer: {
+      height: 300,
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "stretch",
+      borderRadius: 0,
+    },
+    scanView: {
+      height: 290,
+      borderRadius: 0,
+    },
+    imgContainer: {
+      flexDirection: "column",
+      justifyContent: "center",
+      alignItems: "center",
+      marginTop: 0,
+      paddingRight: 5,
+      paddingLeft: 5,
+      marginBottom: 5,
+    },
+    img: {
+      height: Dimensions.get('window').width - 10,
+      width: Dimensions.get('window').width - 10,
+      borderColor: COLORS.border,
+      borderWidth: 1,
+      borderRadius: 0,
+    },
+    doublebuttonContainer: {
+      height: 50,
       flexDirection: "row",
       justifyContent: "space-between",
-      alignItems: "center",
-      backgroundColor: COLORS.main,
-      padding: 5
+      alignItems: "flex-end",
+      paddingRight: 0,
+      paddingLeft: 0,
+      marginTop: 0,
     },
   }
 )

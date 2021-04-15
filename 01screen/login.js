@@ -3,6 +3,7 @@ import React from 'react';
 import { TouchableOpacity, View, TextInput, StyleSheet, Text, Alert, ToastAndroid } from 'react-native';
 import { COLORS, CommonStyles } from '../const'
 import _ from 'lodash';
+import { login } from '../05dbprovider/DBAction4Common';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default class Login extends React.Component {
@@ -70,7 +71,7 @@ export default class Login extends React.Component {
       return;
     }
 
-    let result = true; //await login(_.trim(this.state.password));
+    let result = await login(_.trim(this.state.password));
     if (result === true) {
       await AsyncStorage.setItem('LastLoginDatetime', Date.now().toString());
       ToastAndroid.showWithGravity('ログインできました。', ToastAndroid.SHORT, ToastAndroid.TOP);

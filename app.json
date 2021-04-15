@@ -1,12 +1,12 @@
 {
   "expo": {
-    "name": "bookstore",
+    "name": "ミニ本屋",
     "slug": "bookstore",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/books-512.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/splash20210415.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },

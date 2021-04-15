@@ -3,7 +3,7 @@ import { TouchableOpacity, View, TextInput, StyleSheet, Text, Alert, BackHandler
 //react-navigation对页面的跳转会有缓存，A跳到B再退回到A的时候，不一定会调起Componentdidmount等生命周期方法，所以需要使用如下组件可以触发生命周期
 import { NavigationEvents } from 'react-navigation';
 import _ from 'lodash';
-//import { updatepwd } from '../dbproviders/DBAction4Common';
+import { updatepwd } from '../05dbprovider/DBAction4Common';
 import { COLORS, CommonStyles, DEVICE_BACK_ACTION } from '../const'
 
 
@@ -85,7 +85,7 @@ export default class MofifyPWD extends React.Component {
       return;
     }
 
-    let result = true; //await updatepwd(this.state.password1);
+    let result = await updatepwd(this.state.password1);
     if (result === true) {
       ToastAndroid.showWithGravity('パスワードを変更できました。', ToastAndroid.SHORT, ToastAndroid.TOP);
       this.props.navigation.navigate('home');
