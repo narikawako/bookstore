@@ -2,12 +2,15 @@ import React from 'react';
 import { TouchableOpacity, View, TextInput, Text, Alert, BackHandler, ToastAndroid, Image } from 'react-native';
 import { NavigationEvents } from 'react-navigation';
 import _ from 'lodash';
+//本地库处理
 import { addbook, updatebook, deletebook } from '../05dbprovider/DBAction4Book'
+//常量
 import { COLORS, CommonStyles, DEVICE_BACK_ACTION, _formatDate, BOOKSIMAGEFOLDER, FONTSIZE,getDateNowEX } from '../const'
-import { book_additem_action, book_updateitem_action, book_deleteitem_action, book_loadcurritem_action } from '../04action/index'
 //数据流
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { book_additem_action, book_updateitem_action, book_deleteitem_action, book_loadcurritem_action } from '../04action/index'
+//其他插件
 import { ScrollView } from 'react-native-gesture-handler';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import * as ImagePicker from 'expo-image-picker';
@@ -28,6 +31,7 @@ import * as Permissions from 'expo-permissions';
 class BookItem extends React.Component {
   constructor(props) {
     super(props);
+    //页面上要操作的6个书籍的属性，以及扫描条形码的标志位，还有显示日付输入框的标志位
     this.state = { date: new Date(), cate: "", barcode: "", author: "", name: "", image: "", showdate: false, showscanner: false, scanned: false };
   }
   static navigationOptions = ({ navigation }) => {
@@ -54,11 +58,14 @@ class BookItem extends React.Component {
     };
   };
   render() {
+    //给用户一个取消的机会
     const scanntext = this.state.showscanner ? '取消' : 'スキャン'
+
     return (
       <ScrollView>
         <View style={CommonStyles.container}>
           <NavigationEvents onDidFocus={this._ondidfocus} />
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'コード：'}</Text>
           </View>
@@ -79,18 +86,21 @@ class BookItem extends React.Component {
               />
             </View>
           }
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'名称：'}</Text>
           </View>
           <View style={CommonStyles.inputContainer}>
             <TextInput style={CommonStyles.input} placeholder="" onChangeText={(text) => this.setState({ name: text })} value={this.state.name} />
           </View>
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'著者：'}</Text>
           </View>
           <View style={CommonStyles.inputContainer}>
             <TextInput style={CommonStyles.input} placeholder="" onChangeText={(text) => this.setState({ author: text })} value={this.state.author} />
           </View>
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'購入日付：'}</Text>
           </View>
@@ -111,6 +121,7 @@ class BookItem extends React.Component {
               onCancel={this._hideDatePicker}
             />
           </View>
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'分類：'}</Text>
           </View>
@@ -122,6 +133,7 @@ class BookItem extends React.Component {
               </TouchableOpacity>
             </View>
           </View>
+
           <View style={CommonStyles.labelContainer}>
             <Text style={CommonStyles.label}>{'画像：'}</Text>
           </View>
@@ -155,10 +167,12 @@ class BookItem extends React.Component {
               </TouchableOpacity>
             </View>
           }
+
         </View>
       </ScrollView>
     );
   }
+
   _takephoto = async () => {
     let result = await ImagePicker.launchCameraAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -197,6 +211,7 @@ class BookItem extends React.Component {
   handleBarCodeScanned = async ({ type, data }) => {
     this.setState({ scanned: true, barcode: data, showscanner: false });
   };
+
   _selectcate = () => {
     const newitem = {
       id: '',
@@ -212,6 +227,7 @@ class BookItem extends React.Component {
     this.props.book_loadcurritem_action(newitem)
     this.props.navigation.navigate('bookcatelist');
   }
+
   //选择日付
   _onselectDate = () => {
     this.setState({ showdate: true });
@@ -222,6 +238,7 @@ class BookItem extends React.Component {
   _hideDatePicker = () => {
     this.setState({ showdate: false });
   }
+
   _cancel = () => {
     this.props.navigation.goBack();
     return true;
@@ -289,7 +306,6 @@ class BookItem extends React.Component {
       bookdata.image = imagename;
     }
 
-
     console.log('bookdata:' + JSON.stringify(bookdata));
 
     const isedit = this.props.bookitem.id !== ''
@@ -339,8 +355,10 @@ const mapStateToProps = (state) => {
     bookitem: state.book.currbookitem
   };
 }
+
 const mapDispatchToProps = (dispatch) => {
   //这个组件需要更新全局state的信息
   return bindActionCreators({ book_additem_action, book_updateitem_action, book_deleteitem_action, book_loadcurritem_action }, dispatch);
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(BookItem);

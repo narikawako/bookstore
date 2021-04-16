@@ -1,29 +1,34 @@
 import _ from 'lodash';
 import React from 'react';
 import { View, FlatList, Text, TextInput, ActivityIndicator, BackHandler, TouchableOpacity } from 'react-native';
-//react-navigation对页面的跳转会有缓存，A跳到B再退回到A的时候，不一定会调起Componentdidmount等生命周期方法，所以需要使用如下组件可以触发生命周期
+//react-navigation对页面的跳转会有缓存，A跳到B再退回到A的时候，不一定会调起Componentdidmount等生命周期方法，所以需要使用如下组件刻意触发生命周期
 import { NavigationEvents } from 'react-navigation';
 //数据流
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { book_loadcurritem_action, book_loadlist_action, book_clearlist_action } from '../04action/index'
 //常量
 import { COLORS, CommonStyles, DEVICE_BACK_ACTION, FONTSIZE} from '../const';
+//本地DB
 import { getbooklist, getbookcatelist } from '../05dbprovider/DBAction4Book';
-import { book_loadcurritem_action, book_loadlist_action, book_clearlist_action } from '../04action/index'
+//子组件
 import BookRenderItem from '../01screen/component/bookrenderitem'
+//其他插件
 import { Picker } from '@react-native-picker/picker'
 import { Camera } from 'expo-camera';
 
 class BookList extends React.Component {
   constructor(props) {
     super(props);
-    //这个画面的数据源：书籍列表全集，过滤后的子集，分类列表全集，选中的分类，关键字
-    //书籍全集由Redux数据源提供，子集和选中的分类，关键字因为在页面内频繁改变，所以用页面内State管理。
-    //分类全集可以在Redux里面管理，也可以在页面内管理，要比较两个的复杂度
-    //如果在Redux里面管理，就需要在每次增删改书籍的时候，维护这个全局变量
-    //如果是在页面内通过State管理的话，每次进入页面都要从数据库拿最新的分类全集
+    //这个画面的数据源：书籍列表全集，过滤后的子集，分类列表全集，选中的分类，关键字。
+    //书籍全集由Redux数据源提供，因为书籍列表，新规编辑画面都会涉及这个全集，所以需要redux全集管理。
+    //子集和选中的分类，关键字因为仅仅在页面内有意义，不需要其他页面共用，所以用页面内State管理。
+    //分类全集可以在Redux里面管理，也可以在页面内管理，要比较两个的复杂度。
+    //如果在Redux里面管理，就需要在每次增删改书籍的时候，维护这个全局变量。
+    //如果是在页面内通过State管理的话，每次进入页面都要从数据库拿最新的分类全集。
     //因为这个例子使用的是本地库，每次及时获取不会有太大的性能损失，所以可以用页面State管理
     this.state = { sublist: [], keywords: '', cate: '', catelist: null, showscanner: false, scanned: false };
+    //showscanner和scanned是扫描条形码功能使用的标签位。
   }
   static navigationOptions = ({ navigation }) => {
     //导航中的按钮需要通过入口参数传入
@@ -81,7 +86,10 @@ class BookList extends React.Component {
       return <Picker.Item key={i} value={s.cate} label={s.cate} />
     });
     cateItems.push(catesubitems);
+    
+    //扫描标签位的应用
     const scanntext = this.state.showscanner ? '取消' : 'ｽｷｬﾝ'
+
     //渲染
     return (
       <View style={[CommonStyles.container, { padding: 0 }]}>
@@ -101,7 +109,6 @@ class BookList extends React.Component {
           <View style={[{ height: 50, flex: 1, marginLeft: 3 }]}>
             <Text style={[CommonStyles.text, { textAlign: 'center', fontSize: FONTSIZE.small }]} >{this.state.sublist.length + ' 件'}</Text>
           </View>
-
         </View>
         {
           this.state.showscanner === true &&
@@ -112,7 +119,6 @@ class BookList extends React.Component {
             />
           </View>
         }
-
         <FlatList style={[CommonStyles.flatList, { marginTop: 5, marginLeft: 5, marginRight: 5, marginBottom: 5 }]}
           data={this.state.sublist}
           renderItem={this._renderItem}
@@ -171,12 +177,14 @@ class BookList extends React.Component {
     return filterdata;
   }
 
+  //查看详细
   _onDetailPress = (bookitem) => {
     //设定当前修改的元素，然后进入修改页面
     this.props.book_loadcurritem_action(bookitem)
     this.props.navigation.navigate('bookitem');
   };
 
+  //新规操作
   _add = () => {
     const newitem = {
       id: '',
@@ -234,9 +242,11 @@ class BookList extends React.Component {
     });
 
   };
+
   componentWillUnmount = () => {
     BackHandler.removeEventListener(DEVICE_BACK_ACTION, this._cancel);
   }
+
   _onRefresh = async () => {
     await this._fetchData();
     this.setState({ sublist: this._filterdata(this.state.keywords, this.state.cate) });
@@ -250,8 +260,10 @@ const mapStateToProps = (state) => {
     booklist: state.book.booklist
   };
 }
+
 const mapDispatchToProps = (dispatch) => {
   //这个组件需要更新Redux的信息（通过哪些Action去更新？）
   return bindActionCreators({ book_loadcurritem_action, book_loadlist_action, book_clearlist_action }, dispatch);
 }
+
 export default connect(mapStateToProps, mapDispatchToProps)(BookList);
