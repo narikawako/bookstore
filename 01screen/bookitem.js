@@ -175,7 +175,7 @@ class BookItem extends React.Component {
 
   _takephoto = async () => {
     let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true, //允许编辑
       aspect: [1, 1], //编辑框大小
       quality: 1, //图片质量
@@ -188,7 +188,7 @@ class BookItem extends React.Component {
   };
   _selectpicture = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true, //允许编辑
       aspect: [1, 1], //编辑框大小
       quality: 1, //图片质量
@@ -306,17 +306,18 @@ class BookItem extends React.Component {
       bookdata.image = imagename;
     }
 
-    console.log('bookdata:' + JSON.stringify(bookdata));
+    //console.log('bookdata:' + JSON.stringify(bookdata));
 
     const isedit = this.props.bookitem.id !== ''
     if (isedit) {
       bookdata.id = this.props.bookitem.id;
-      //console.log('data0:' + JSON.stringify(bookdata));
+      console.log('id:' + JSON.stringify(this.props.bookitem.id));
+      console.log('data0:' + JSON.stringify(bookdata));
       await updatebook(bookdata)
       this.props.book_updateitem_action(bookdata);
       ToastAndroid.showWithGravity('ブックの変更処理が完了ました。', ToastAndroid.SHORT, ToastAndroid.TOP);
     } else {
-      //console.log('data1:' + JSON.stringify(bookdata));
+      console.log('data1:' + JSON.stringify(bookdata));
       await addbook(bookdata)
       this.props.book_additem_action(bookdata);
       ToastAndroid.showWithGravity('ブックの新規処理が完了ました。', ToastAndroid.SHORT, ToastAndroid.TOP);
@@ -327,8 +328,8 @@ class BookItem extends React.Component {
   _ondidfocus = async () => {
     const response1 = await Permissions.askAsync(Permissions.CAMERA);
     console.log('申请相机权限CAMERA的结果是：' + response1.status + '/' + response1.expires + '/' + response1.canAskAgain);
-    const response2 = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-    console.log('申请相机权限CAMERA_ROLL的结果是：' + response2.status + '/' + response2.expires + '/' + response2.canAskAgain);
+    const response2 = await Permissions.askAsync(Permissions.MEDIA_LIBRARY);
+    console.log('申请相机权限MEDIA_LIBRARY的结果是：' + response2.status + '/' + response2.expires + '/' + response2.canAskAgain);
 
     BackHandler.addEventListener(DEVICE_BACK_ACTION, this._cancel);
     this.props.navigation.setParams({ cancel: this._cancel });

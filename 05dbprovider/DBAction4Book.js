@@ -53,8 +53,8 @@ export const updatebook = async (item) => {
           item.image,
           item.id
         ],
-        () => {
-          console.log('更新book信息成功');
+        (_, { rowsAffected }) => {
+          console.log('更新book信息成功，影响行数：' + rowsAffected);
           resolve(true)
         },
         (_, error) => {
@@ -74,8 +74,8 @@ export const deletebook = async (id) => {
       tx.executeSql(
         'delete from book where id =? ;',
         [id],
-        () => {
-          console.log('删除book成功');
+        (_, { rowsAffected }) => {
+          console.log('删除book信息成功，影响行数：' + rowsAffected);
           resolve(true)
         },
         (_, error) => {
@@ -98,6 +98,7 @@ export const getbooklist = async () => {
         (_, { rows: { length, _array } }) => {
           if (length > 0) {
             console.log('获取book一览信息成功');
+            console.log('bookdata:' + JSON.stringify(_array));
             resolve(_array)
           } else {
             console.log('从数据库找不到任何book数据');
@@ -124,6 +125,7 @@ export const getbookcatelist = async () => {
         (_, { rows: { length, _array } }) => {
           if (length > 0) {
             console.log('获取Cate一览信息成功');
+            console.log('bookcatedata:' + JSON.stringify(_array));
             resolve(_array)
           } else {
             console.log('从数据库找不到任何Cate数据');

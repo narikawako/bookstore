@@ -8,6 +8,7 @@ const DB = SQLite.openDatabase('db');
 export default class Switch extends React.Component {
   constructor(props) {
     super(props);
+    console.log('APP进入分支页');
     this.prepareDB();
     this.silenceLogin();
   }

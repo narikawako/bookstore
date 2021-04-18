@@ -25,6 +25,7 @@ const AppContainer = createAppContainer(
 );
 export default class App extends React.Component {
   render() {
+    console.log('APP已经启动')
     return (
       //数据流处理：通过Provider和createStore将全局的state绑定到组件
       <Provider store={createStore(reducer)}>
