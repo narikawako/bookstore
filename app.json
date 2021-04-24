@@ -21,9 +21,10 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/books-512.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.cheney.bookstore"
     },
     "web": {
       "favicon": "./assets/favicon.png"

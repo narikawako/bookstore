@@ -5,7 +5,7 @@ import _ from 'lodash';
 //本地库处理
 import { addbook, updatebook, deletebook } from '../05dbprovider/DBAction4Book'
 //常量
-import { COLORS, CommonStyles, DEVICE_BACK_ACTION, _formatDate, BOOKSIMAGEFOLDER, FONTSIZE,getDateNowEX } from '../const'
+import { COLORS, CommonStyles, DEVICE_BACK_ACTION, _formatDate, BOOKSIMAGEFOLDER, FONTSIZE, getDateNowEX } from '../const'
 //数据流
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -318,7 +318,8 @@ class BookItem extends React.Component {
       ToastAndroid.showWithGravity('ブックの変更処理が完了ました。', ToastAndroid.SHORT, ToastAndroid.TOP);
     } else {
       console.log('data1:' + JSON.stringify(bookdata));
-      await addbook(bookdata)
+      const newid = await addbook(bookdata);
+      bookdata.id = newid;
       this.props.book_additem_action(bookdata);
       ToastAndroid.showWithGravity('ブックの新規処理が完了ました。', ToastAndroid.SHORT, ToastAndroid.TOP);
     }
